@@ -2,7 +2,7 @@ from __future__ import division
 from sympy import (Symbol, Wild, sin, cos, exp, sqrt, pi, Function, Derivative,
         abc, Integer, Eq, symbols, Add, I, Float, log, Rational, Lambda, atan2,
         cse, cot, tan, S, Tuple, Basic, Dict, Piecewise, oo, Mul,
-        factor, nsimplify, zoo, Subs, RootOf, AccumBounds)
+        factor, nsimplify, zoo, Subs, RootOf, AccumBounds, Integral)
 from sympy.core.basic import _aresame
 from sympy.utilities.pytest import XFAIL
 from sympy.abc import x, y, z
@@ -458,6 +458,20 @@ def test_derivative_subs3():
     dex = Derivative(exp(x), x)
     assert Derivative(dex, x).subs(dex, exp(x)) == dex
     assert dex.subs(exp(x), dex) == Derivative(exp(x), x, x)
+
+
+def test_integral_subs():
+    x, y, z = symbols('x y z')
+    f_func, g_func = symbols('f g', cls=Function)
+    f, g = f_func(x, y), g_func(x, y)
+
+    p = Integral(f.diff(x), (x, 0, z))
+    assert p.subs(f.diff(x), g) == Integral(g, (x, 0, z))
+
+    # should also work
+    q = Integral(f.diff(x), (y, 0, z))
+    assert q.subs(f.diff(x), g) == Integral(g, (y, 0, z))
+
 
 def test_issue_5284():
     A, B = symbols('A B', commutative=False)
