@@ -145,6 +145,11 @@ def test_Symbol_two_assumptions():
     assert eval(srepr(x), ENV) == x
 
 
+def test_Function_assumptions():
+    x = Function('x', negative=0, integer=1)
+    assert eval(srepr(x), ENV) == x
+
+
 def test_Symbol_no_special_commutative_treatment():
     sT(Symbol('x'), "Symbol('x')")
     sT(Symbol('x', commutative=False), "Symbol('x', commutative=False)")
